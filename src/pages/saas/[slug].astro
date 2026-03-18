@@ -1,0 +1,45 @@
+---
+import { getCollection } from 'astro:content';
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+
+export async function getStaticPaths() {
+  const items = await getCollection('saas', ({ data }) => !data.draft);
+  return items.map(item => ({ params: { slug: item.slug }, props: { item } }));
+}
+
+const { item } = Astro.props;
+const { Content } = await item.render();
+---
+
+<ArticleLayout
+  title={item.data.title}
+  description={item.data.description}
+  pubDate={item.data.pubDate}
+  updatedDate={item.data.updatedDate}
+  ogImage={item.data.ogImage}
+  category={item.data.category}
+  tags={item.data.tags}
+>
+  <div class="mb-8 p-6 bg-teal/5 rounded-2xl border border-teal/20 flex flex-wrap gap-4 items-center">
+    <div>
+      <p class="text-xs text-stone-500 mb-0.5">アプリ名</p>
+      <p class="font-bold text-stone-800 text-lg">{item.data.appName}</p>
+    </div>
+    <div>
+      <p class="text-xs text-stone-500 mb-0.5">価格</p>
+      <p class="font-bold text-teal text-lg">{item.data.price}</p>
+      {item.data.priceNote && <p class="text-xs text-stone-400">{item.data.priceNote}</p>}
+    </div>
+    {item.data.appUrl && (
+      <a
+        href={item.data.appUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="ml-auto bg-orange hover:bg-orange-dark text-white font-bold px-5 py-2.5 rounded-xl transition-colors text-sm"
+      >
+        今すぐ試す ↗
+      </a>
+    )}
+  </div>
+  <Content />
+</ArticleLayout>

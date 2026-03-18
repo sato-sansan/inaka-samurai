@@ -1,0 +1,203 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SaaSCard from '../components/SaaSCard.astro';
+import NewsletterForm from '../components/NewsletterForm.astro';
+import { getCollection } from 'astro:content';
+
+// 各コレクションから最新を取得
+const saasItems    = (await getCollection('saas',        ({ data }) => !data.draft)).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()).slice(0, 3);
+const blogPosts    = (await getCollection('blog',        ({ data }) => !data.draft)).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()).slice(0, 3);
+const perfPosts    = (await getCollection('performance', ({ data }) => !data.draft)).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()).slice(0, 3);
+const gamePosts    = (await getCollection('game',        ({ data }) => !data.draft)).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()).slice(0, 4);
+
+function fmt(d: Date) {
+  return d.toLocaleDateString('ja-JP', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+---
+
+<Layout title="田舎のさむらい">
+
+  {/* ── ヒーローエリア ─────────────────────────────── */}
+  <section class="bg-gradient-to-b from-teal/10 to-beige-200 pt-16 pb-20 px-4 text-center">
+    <div class="max-w-3xl mx-auto">
+      <p class="inline-block bg-orange/10 text-orange font-bold text-sm px-4 py-1.5 rounded-full mb-6">
+        💴 500円から始められる
+      </p>
+      <h1 class="text-4xl sm:text-5xl font-black text-stone-800 leading-tight mb-6">
+        田舎の商売、<br>
+        <span class="text-teal">AIと栄養</span>で<br>
+        もっと楽に。
+      </h1>
+      <p class="text-xl text-stone-600 leading-relaxed mb-4">
+        さむと一緒に始めませんか？
+      </p>
+      <p class="text-base text-stone-500 max-w-xl mx-auto leading-relaxed">
+        地方の個人事業主のために、予算ゼロから使えるAIツールと<br>
+        分子栄養学の知恵を丁寧にまとめています。
+      </p>
+      <div class="flex flex-wrap justify-center gap-4 mt-10">
+        <a href="#saas"  class="bg-teal hover:bg-teal-dark text-white font-bold px-6 py-3 rounded-full transition-colors">ツールを見る</a>
+        <a href="#newsletter" class="border-2 border-teal text-teal hover:bg-teal/5 font-bold px-6 py-3 rounded-full transition-colors">メルマガを読む</a>
+      </div>
+    </div>
+  </section>
+
+  {/* ── 1. ワンコインSaaS ─────────────────────────── */}
+  <section id="saas" class="max-w-5xl mx-auto px-4 py-16">
+    <div class="flex items-end justify-between mb-8 gap-4 flex-wrap">
+      <div>
+        <p class="text-xs font-bold tracking-widest text-teal uppercase mb-1">01 / ワンコインSaaS</p>
+        <h2 class="text-3xl font-black text-stone-800">💴 月500円〜で使えるツール</h2>
+        <p class="mt-2 text-stone-500">これなら試せる、低価格で本格的なSaaSを厳選。</p>
+      </div>
+      <a href="/saas" class="text-teal font-semibold text-sm hover:underline shrink-0">すべて見る →</a>
+    </div>
+
+    {saasItems.length > 0 ? (
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {saasItems.map(item => (
+          <SaaSCard
+            title={item.data.title}
+            appName={item.data.appName}
+            price={item.data.price}
+            priceNote={item.data.priceNote}
+            category={item.data.category}
+            description={item.data.description}
+            appUrl={item.data.appUrl}
+            slug={item.slug}
+            oneCoin={item.data.oneCoin}
+            isFeatured={item.data.isFeatured}
+          />
+        ))}
+      </div>
+    ) : (
+      <div class="text-center py-16 text-stone-400 border-2 border-dashed border-beige-300 rounded-2xl">
+        <p class="text-4xl mb-4">🔧</p>
+        <p>準備中です。もうすぐ公開します！</p>
+      </div>
+    )}
+  </section>
+
+  {/* ── 2. AI・テックログ ────────────────────────── */}
+  <section id="blog" class="bg-stone-50 py-16 px-4">
+    <div class="max-w-5xl mx-auto">
+      <div class="flex items-end justify-between mb-8 gap-4 flex-wrap">
+        <div>
+          <p class="text-xs font-bold tracking-widest text-teal uppercase mb-1">02 / AI・テックログ</p>
+          <h2 class="text-3xl font-black text-stone-800">🤖 Claude・Notion・Shopify活用術</h2>
+          <p class="mt-2 text-stone-500">実際に作って試した記録を包み隠さずシェア。</p>
+        </div>
+        <a href="/blog" class="text-teal font-semibold text-sm hover:underline shrink-0">すべて見る →</a>
+      </div>
+
+      {blogPosts.length > 0 ? (
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {blogPosts.map(post => (
+            <a href={`/blog/${post.slug}`} class="group bg-white rounded-2xl border border-beige-300 p-6 flex flex-col gap-3 hover:shadow-md transition-shadow">
+              <span class="text-xs font-semibold bg-teal/10 text-teal px-2.5 py-0.5 rounded-full self-start">{post.data.category}</span>
+              <h3 class="font-bold text-stone-800 leading-snug group-hover:text-teal transition-colors">{post.data.title}</h3>
+              <p class="text-sm text-stone-500 leading-relaxed flex-1">{post.data.description}</p>
+              <time class="text-xs text-stone-400">{fmt(post.data.pubDate)}</time>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <div class="text-center py-16 text-stone-400 border-2 border-dashed border-beige-300 rounded-2xl">
+          <p class="text-4xl mb-4">✍️</p>
+          <p>記事を執筆中です。もうすぐ公開！</p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  {/* ── 3. パフォーマンスログ ──────────────────────── */}
+  <section id="performance" class="max-w-5xl mx-auto px-4 py-16">
+    <div class="flex items-end justify-between mb-8 gap-4 flex-wrap">
+      <div>
+        <p class="text-xs font-bold tracking-widest text-teal uppercase mb-1">03 / パフォーマンスログ</p>
+        <h2 class="text-3xl font-black text-stone-800">🥗 脳と身体を整える栄養術</h2>
+        <p class="mt-2 text-stone-500">分子栄養アドバイザー・さむが経営者目線で実践する栄養管理。</p>
+      </div>
+      <a href="/performance" class="text-teal font-semibold text-sm hover:underline shrink-0">すべて見る →</a>
+    </div>
+
+    {perfPosts.length > 0 ? (
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {perfPosts.map(post => (
+          <a href={`/performance/${post.slug}`} class="group bg-white rounded-2xl border border-beige-300 p-6 flex flex-col gap-3 hover:shadow-md transition-shadow">
+            <span class="text-xs font-semibold bg-orange/10 text-orange px-2.5 py-0.5 rounded-full self-start">{post.data.category}</span>
+            <h3 class="font-bold text-stone-800 leading-snug group-hover:text-teal transition-colors">{post.data.title}</h3>
+            <p class="text-sm text-stone-500 leading-relaxed flex-1">{post.data.description}</p>
+            <time class="text-xs text-stone-400">{fmt(post.data.pubDate)}</time>
+          </a>
+        ))}
+      </div>
+    ) : (
+      <div class="text-center py-16 text-stone-400 border-2 border-dashed border-beige-300 rounded-2xl">
+        <p class="text-4xl mb-4">💊</p>
+        <p>準備中です。もうすぐ公開！</p>
+      </div>
+    )}
+  </section>
+
+  {/* ── 4. お遊び・ゲーム ─────────────────────────── */}
+  <section id="game" class="bg-gradient-to-br from-teal/5 to-orange/5 py-16 px-4">
+    <div class="max-w-5xl mx-auto">
+      <div class="flex items-end justify-between mb-8 gap-4 flex-wrap">
+        <div>
+          <p class="text-xs font-bold tracking-widest text-teal uppercase mb-1">04 / お遊び・ゲーム</p>
+          <h2 class="text-3xl font-black text-stone-800">🎮 開発の合間に作ったもの</h2>
+          <p class="mt-2 text-stone-500">ちょっとした遊び心のあるコンテンツ。</p>
+        </div>
+        <a href="/game" class="text-teal font-semibold text-sm hover:underline shrink-0">すべて見る →</a>
+      </div>
+
+      {gamePosts.length > 0 ? (
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {gamePosts.map(post => (
+            <a href={`/game/${post.slug}`} class="group bg-white rounded-2xl border border-beige-300 p-5 flex flex-col gap-2 hover:shadow-md transition-shadow text-center">
+              <div class="text-4xl mb-1">🕹️</div>
+              <h3 class="font-bold text-stone-800 text-sm leading-snug group-hover:text-teal transition-colors">{post.data.title}</h3>
+              <span class:list={[
+                'text-xs font-semibold px-2 py-0.5 rounded-full self-center mt-auto',
+                post.data.status === '公開中' ? 'bg-teal/10 text-teal' : 'bg-stone-100 text-stone-400',
+              ]}>
+                {post.data.status}
+              </span>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <div class="text-center py-16 text-stone-400 border-2 border-dashed border-beige-300 rounded-2xl bg-white/50">
+          <p class="text-4xl mb-4">🕹️</p>
+          <p>ゲームを開発中です。お楽しみに！</p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  {/* ── プロフィール帯 ─────────────────────────────── */}
+  <section class="max-w-3xl mx-auto px-4 py-16 text-center">
+    <div class="bg-white rounded-2xl border border-beige-300 p-8 sm:p-10">
+      <div class="w-20 h-20 rounded-full bg-teal/20 text-teal flex items-center justify-center text-3xl mx-auto mb-4 font-black select-none">
+        ⚔️
+      </div>
+      <h2 class="text-2xl font-black text-stone-800 mb-2">さむ（SAM）について</h2>
+      <p class="text-teal font-semibold text-sm mb-4">合同会社サンリクテック代表 × 分子栄養アドバイザー</p>
+      <p class="text-stone-600 leading-relaxed max-w-xl mx-auto">
+        2023年4月、宮城県気仙沼にて創業。<br>
+        「地方の個人事業主がAIと栄養で商売を楽にする」をテーマに、
+        低予算で実践できるツールと知識を発信しています。
+      </p>
+      <a href="/about" class="inline-block mt-6 border-2 border-teal text-teal hover:bg-teal hover:text-white font-bold px-6 py-2.5 rounded-full transition-colors text-sm">
+        もっと詳しく →
+      </a>
+    </div>
+  </section>
+
+  {/* ── メルマガCTA（バナー版）─────────────────────── */}
+  <div id="newsletter">
+    <NewsletterForm variant="banner" />
+  </div>
+
+</Layout>

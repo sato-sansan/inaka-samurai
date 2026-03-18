@@ -1,0 +1,78 @@
+---
+import Layout from './Layout.astro';
+import NewsletterForm from '../components/NewsletterForm.astro';
+
+export interface Props {
+  title:       string;
+  description: string;
+  pubDate:     Date;
+  updatedDate?: Date;
+  ogImage?:    string;
+  author?:     string;
+  category?:   string;
+  tags?:       string[];
+}
+
+const {
+  title,
+  description,
+  pubDate,
+  updatedDate,
+  ogImage,
+  author = 'さむ（SAM）',
+  category,
+  tags = [],
+} = Astro.props;
+
+function fmt(d: Date) {
+  return d.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+---
+
+<Layout title={title} description={description} ogImage={ogImage} ogType="article" pubDate={pubDate}>
+
+  <article class="max-w-3xl mx-auto px-4 py-12">
+
+    {/* パンくず・メタ */}
+    <header class="mb-10">
+      {category && (
+        <span class="inline-block bg-teal/10 text-teal text-xs font-bold px-3 py-1 rounded-full mb-4">
+          {category}
+        </span>
+      )}
+      <h1 class="text-3xl sm:text-4xl font-black text-stone-800 leading-tight mb-4">{title}</h1>
+      <p class="text-stone-500 text-sm leading-relaxed mb-6">{description}</p>
+
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-stone-400 border-t border-beige-300 pt-4">
+        <span>✍️ {author}</span>
+        <time datetime={pubDate.toISOString()}>公開: {fmt(pubDate)}</time>
+        {updatedDate && (
+          <time datetime={updatedDate.toISOString()}>更新: {fmt(updatedDate)}</time>
+        )}
+      </div>
+
+      {tags.length > 0 && (
+        <div class="flex flex-wrap gap-2 mt-3">
+          {tags.map(tag => (
+            <span class="bg-beige-300 text-stone-600 text-xs px-2.5 py-0.5 rounded-full">#{tag}</span>
+          ))}
+        </div>
+      )}
+    </header>
+
+    {/* 記事本文（Markdownコンテンツ） */}
+    <div class="prose prose-samurai max-w-none
+      prose-headings:font-black prose-headings:text-teal-dark
+      prose-a:text-teal prose-a:no-underline hover:prose-a:underline
+      prose-code:text-teal-dark prose-code:bg-beige-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
+      prose-pre:rounded-2xl prose-pre:shadow-lg
+      prose-img:rounded-xl prose-img:shadow-md
+      prose-blockquote:border-teal prose-blockquote:bg-teal/5 prose-blockquote:rounded-r-xl">
+      <slot />
+    </div>
+
+    {/* メルマガCTA（インライン版） */}
+    <NewsletterForm variant="inline" />
+
+  </article>
+</Layout>

@@ -1,0 +1,27 @@
+---
+import { getCollection } from 'astro:content';
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('performance', ({ data }) => !data.draft);
+  return posts.map(post => ({ params: { slug: post.slug }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+---
+
+<ArticleLayout
+  title={post.data.title}
+  description={post.data.description}
+  pubDate={post.data.pubDate}
+  updatedDate={post.data.updatedDate}
+  ogImage={post.data.ogImage}
+  category={post.data.category}
+  tags={post.data.tags}
+>
+  <div class="mb-6 p-4 bg-orange/5 border border-orange/20 rounded-xl text-sm text-stone-600">
+    ⚠️ {post.data.disclaimer}
+  </div>
+  <Content />
+</ArticleLayout>

@@ -1,0 +1,148 @@
+---
+export interface Props {
+  title:        string;
+  description?: string;
+  ogImage?:     string;
+  ogType?:      'website' | 'article';
+  pubDate?:     Date;
+  noindex?:     boolean;
+}
+
+const {
+  title,
+  description = '地方の個人事業主のためのAI活用・栄養管理キュレーションサイト。500円からはじめるAIと身体の活用録。',
+  ogImage,
+  ogType = 'website',
+  pubDate,
+  noindex = false,
+} = Astro.props;
+
+const siteUrl    = Astro.site ?? 'https://inaka-samurai.jp';
+const canonical  = new URL(Astro.url.pathname, siteUrl).toString();
+const defaultOg  = new URL('/images/og-default.png', siteUrl).toString();
+const ogImageUrl = ogImage ? new URL(ogImage, siteUrl).toString() : defaultOg;
+const fullTitle  = title === '田舎のさむらい'
+  ? '田舎のさむらい 〜500円からはじめるAIと身体の活用録〜'
+  : `${title} | 田舎のさむらい`;
+---
+
+<!doctype html>
+<html lang="ja" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="generator" content={Astro.generator} />
+
+  {/* SEO */}
+  <title>{fullTitle}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  {noindex && <meta name="robots" content="noindex,nofollow" />}
+
+  {/* OGP */}
+  <meta property="og:type"        content={ogType} />
+  <meta property="og:url"         content={canonical} />
+  <meta property="og:title"       content={fullTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image"       content={ogImageUrl} />
+  <meta property="og:site_name"   content="田舎のさむらい" />
+  <meta property="og:locale"      content="ja_JP" />
+  {pubDate && <meta property="article:published_time" content={pubDate.toISOString()} />}
+
+  {/* Twitter Card */}
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content={fullTitle} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image"       content={ogImageUrl} />
+  <meta name="twitter:site"        content="@sam_sanrikutech" />
+
+  {/* Favicon */}
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  {/* Fonts */}
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap"
+    rel="stylesheet"
+  />
+</head>
+
+<body class="bg-beige-200 text-stone-800 font-sans min-h-screen flex flex-col">
+
+  {/* ── ヘッダー ── */}
+  <header class="sticky top-0 z-50 bg-beige-200/90 backdrop-blur border-b border-beige-300">
+    <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
+      <a href="/" class="flex items-center gap-2 group">
+        <span class="text-2xl select-none" aria-hidden="true">⚔️</span>
+        <span class="font-black text-teal text-lg leading-tight group-hover:text-teal-dark transition-colors">
+          田舎のさむらい
+        </span>
+      </a>
+
+      <nav class="hidden sm:flex items-center gap-6 text-sm font-semibold">
+        <a href="/saas"        class="text-stone-600 hover:text-teal transition-colors">💴 SaaS</a>
+        <a href="/blog"        class="text-stone-600 hover:text-teal transition-colors">🤖 テック</a>
+        <a href="/performance" class="text-stone-600 hover:text-teal transition-colors">🥗 栄養</a>
+        <a href="/game"        class="text-stone-600 hover:text-teal transition-colors">🎮 ゲーム</a>
+      </nav>
+
+      <a
+        href="#newsletter"
+        class="bg-orange hover:bg-orange-dark text-white text-sm font-bold px-4 py-2 rounded-full transition-colors whitespace-nowrap"
+      >
+        メルマガ登録
+      </a>
+    </div>
+  </header>
+
+  {/* ── メインコンテンツ ── */}
+  <main class="flex-1">
+    <slot />
+  </main>
+
+  {/* ── フッター ── */}
+  <footer class="bg-stone-800 text-stone-300 py-12 px-4 mt-16">
+    <div class="max-w-5xl mx-auto grid sm:grid-cols-3 gap-8">
+      <div>
+        <p class="font-black text-white text-lg mb-2">⚔️ 田舎のさむらい</p>
+        <p class="text-sm leading-relaxed">
+          500円からはじめるAIと身体の活用録。<br>
+          地方の個人事業主を応援します。
+        </p>
+      </div>
+      <div>
+        <p class="font-bold text-white mb-3">カテゴリー</p>
+        <ul class="space-y-1.5 text-sm">
+          <li><a href="/saas"        class="hover:text-teal-light transition-colors">💴 ワンコインSaaS</a></li>
+          <li><a href="/blog"        class="hover:text-teal-light transition-colors">🤖 AI・テックログ</a></li>
+          <li><a href="/performance" class="hover:text-teal-light transition-colors">🥗 パフォーマンスログ</a></li>
+          <li><a href="/game"        class="hover:text-teal-light transition-colors">🎮 お遊び・ゲーム</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="font-bold text-white mb-3">運営</p>
+        <ul class="space-y-1.5 text-sm">
+          <li><a href="/about"   class="hover:text-teal-light transition-colors">さむについて</a></li>
+          <li><a href="/contact" class="hover:text-teal-light transition-colors">お問い合わせ</a></li>
+          <li>
+            <a
+              href="https://sanrikutech.jp"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="hover:text-teal-light transition-colors"
+            >
+              合同会社サンリクテック ↗
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="max-w-5xl mx-auto mt-10 pt-6 border-t border-stone-700 text-xs text-stone-500 flex flex-wrap justify-between gap-2">
+      <p>© {new Date().getFullYear()} 合同会社サンリクテック（さむ） All rights reserved.</p>
+      <a href="/privacy" class="hover:text-stone-300 transition-colors">プライバシーポリシー</a>
+    </div>
+  </footer>
+
+</body>
+</html>

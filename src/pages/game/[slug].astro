@@ -1,0 +1,40 @@
+---
+import { getCollection } from 'astro:content';
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('game', ({ data }) => !data.draft);
+  return posts.map(post => ({ params: { slug: post.slug }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+---
+
+<ArticleLayout
+  title={post.data.title}
+  description={post.data.description}
+  pubDate={post.data.pubDate}
+  updatedDate={post.data.updatedDate}
+  ogImage={post.data.ogImage}
+  tags={post.data.tags}
+>
+  {post.data.playUrl && (
+    <div class="mb-8 text-center">
+      <a
+        href={post.data.playUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 bg-teal hover:bg-teal-dark text-white font-bold px-8 py-4 rounded-2xl text-lg transition-colors shadow-lg"
+      >
+        🕹️ プレイする
+      </a>
+    </div>
+  )}
+  <div class="mb-6 flex flex-wrap gap-2">
+    {post.data.techUsed.map((tech: string) => (
+      <span class="bg-stone-100 text-stone-600 text-xs font-semibold px-3 py-1 rounded-full">{tech}</span>
+    ))}
+  </div>
+  <Content />
+</ArticleLayout>

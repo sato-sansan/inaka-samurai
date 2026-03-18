@@ -1,0 +1,86 @@
+---
+export interface Props {
+  title:      string;
+  appName:    string;
+  price:      string;
+  priceNote?: string;
+  category:   string;
+  description: string;
+  appUrl?:    string;
+  slug:       string;
+  oneCoin?:   boolean;
+  isFeatured?: boolean;
+}
+
+const {
+  title,
+  appName,
+  price,
+  priceNote,
+  category,
+  description,
+  appUrl,
+  slug,
+  oneCoin = true,
+  isFeatured = false,
+} = Astro.props;
+---
+
+<article
+  class:list={[
+    'relative bg-white rounded-2xl border-2 p-6 flex flex-col gap-4 transition-transform hover:-translate-y-1 hover:shadow-lg',
+    isFeatured ? 'border-teal' : 'border-beige-300',
+  ]}
+>
+  {/* ワンコインバッジ */}
+  {oneCoin && (
+    <span
+      class="absolute -top-3 -right-3 bg-orange text-white text-xs font-bold px-3 py-1 rounded-full shadow-md rotate-6 select-none"
+      aria-label="ワンコイン価格"
+    >
+      💴 ワンコイン〜
+    </span>
+  )}
+
+  {/* カテゴリタグ */}
+  <div class="flex items-center gap-2">
+    <span class="text-xs font-semibold bg-teal/10 text-teal px-2.5 py-0.5 rounded-full">
+      {category}
+    </span>
+    {isFeatured && (
+      <span class="text-xs font-semibold bg-orange/10 text-orange px-2.5 py-0.5 rounded-full">
+        おすすめ
+      </span>
+    )}
+  </div>
+
+  {/* アプリ名・価格 */}
+  <div>
+    <h3 class="text-xl font-bold text-stone-800 leading-tight">{appName}</h3>
+    <p class="mt-1 text-teal font-bold text-lg">{price}</p>
+    {priceNote && <p class="text-xs text-stone-500 mt-0.5">{priceNote}</p>}
+  </div>
+
+  {/* 説明文 */}
+  <p class="text-stone-600 text-sm leading-relaxed flex-1">{description}</p>
+
+  {/* CTAボタン群 */}
+  <div class="flex flex-wrap gap-2 pt-2">
+    <a
+      href={`/saas/${slug}`}
+      class="inline-flex items-center gap-1 bg-teal text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-teal-dark transition-colors"
+    >
+      詳しく見る →
+    </a>
+    {appUrl && (
+      <a
+        href={appUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-1 border border-teal text-teal text-sm font-semibold px-4 py-2 rounded-lg hover:bg-teal/5 transition-colors"
+      >
+        アプリを試す ↗
+      </a>
+    )}
+  </div>
+</article>
