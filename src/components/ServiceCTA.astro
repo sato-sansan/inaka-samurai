@@ -1,0 +1,42 @@
+---
+export interface Props {
+  source?: string;
+}
+
+const { source = 'article' } = Astro.props;
+
+const suffix = `&src=${encodeURIComponent(source)}`;
+const contactUrl   = `/contact?plan=diagnosis${suffix}`;
+const serviceUrl   = `/service?${new URLSearchParams({ src: source }).toString()}`;
+---
+
+<aside class="my-12 rounded-2xl bg-white border-2 border-teal/30 p-6 sm:p-8">
+  <div class="flex flex-col sm:flex-row gap-5 items-start sm:items-center">
+    <div class="text-4xl select-none shrink-0" aria-hidden="true">💼</div>
+    <div class="flex-1">
+      <p class="text-xs font-bold tracking-widest text-teal uppercase mb-1">導入支援</p>
+      <h3 class="text-lg sm:text-xl font-black text-stone-800 leading-snug mb-2">
+        記事の仕組み、御社に導入しませんか？
+      </h3>
+      <p class="text-sm text-stone-600 leading-relaxed">
+        このサイトの記事で公開している仕組みを御社向けに構築します。<br class="hidden sm:block">
+        まずは無料のAI集客診断（30分）でお話ししましょう。
+      </p>
+    </div>
+  </div>
+
+  <div class="flex flex-wrap gap-3 mt-6">
+    <a
+      href={contactUrl}
+      class="bg-orange hover:bg-orange-dark text-white text-sm font-bold px-5 py-2.5 rounded-full transition-colors whitespace-nowrap"
+    >
+      無料AI集客診断（30分）→
+    </a>
+    <a
+      href={serviceUrl}
+      class="border-2 border-teal text-teal hover:bg-teal/5 text-sm font-bold px-5 py-2.5 rounded-full transition-colors whitespace-nowrap"
+    >
+      サービス内容を見る
+    </a>
+  </div>
+</aside>

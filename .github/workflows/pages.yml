@@ -28,6 +28,10 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx astro build --site https://sato-sansan.github.io --base /inaka-samurai
+        env:
+          # リポジトリの Settings > Variables で設定（未設定ならフォームは「準備中」表示）
+          PUBLIC_CONTACT_FORM_ACTION: ${{ vars.PUBLIC_CONTACT_FORM_ACTION }}
+          PUBLIC_CONTACT_EMAIL: ${{ vars.PUBLIC_CONTACT_EMAIL }}
       - name: Rewrite root-relative links for project Pages
         run: |
           find dist -name '*.html' -print0 | xargs -0 perl -pi -e 's#((?:href|src|action)=")/(?!/|inaka-samurai/)#$1/inaka-samurai/#g'

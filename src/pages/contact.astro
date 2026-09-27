@@ -1,0 +1,170 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const formAction = import.meta.env.PUBLIC_CONTACT_FORM_ACTION;
+const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL;
+const formReady = Boolean(formAction);
+---
+
+<Layout
+  title="お問い合わせ"
+  description="AI集客自動化・AI相談サービスへのお問い合わせ、無料AI集客診断（30分）のお申し込みはこちらから。"
+>
+  <section class="max-w-2xl mx-auto px-4 py-16">
+    <div class="text-center mb-10">
+      <p class="text-xs font-bold tracking-widest text-teal uppercase mb-1">CONTACT</p>
+      <h1 class="text-3xl sm:text-4xl font-black text-stone-800 mb-4">お問い合わせ</h1>
+      <p class="text-stone-600 leading-relaxed">
+        無料AI集客診断（30分）のお申し込み、サービスに関するご相談はこちらのフォームからどうぞ。
+      </p>
+    </div>
+
+    {formReady ? (
+      <form
+        action={formAction}
+        method="POST"
+        id="contact-form"
+        class="bg-white rounded-2xl border border-beige-300 p-6 sm:p-8 flex flex-col gap-5"
+      >
+        <div>
+          <label for="company" class="block text-sm font-bold text-stone-700 mb-1.5">会社名・屋号</label>
+          <input
+            type="text"
+            id="company"
+            name="company"
+            class="w-full px-4 py-3 rounded-xl border-2 border-beige-300 bg-white text-stone-800 placeholder-stone-400 focus:outline-none focus:border-teal text-base"
+            placeholder="例）〇〇水産"
+          />
+        </div>
+
+        <div>
+          <label for="name" class="block text-sm font-bold text-stone-700 mb-1.5">お名前</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            class="w-full px-4 py-3 rounded-xl border-2 border-beige-300 bg-white text-stone-800 placeholder-stone-400 focus:outline-none focus:border-teal text-base"
+            placeholder="例）三陸 太郎"
+          />
+        </div>
+
+        <div>
+          <label for="email" class="block text-sm font-bold text-stone-700 mb-1.5">メールアドレス <span class="text-orange">必須</span></label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            class="w-full px-4 py-3 rounded-xl border-2 border-beige-300 bg-white text-stone-800 placeholder-stone-400 focus:outline-none focus:border-teal text-base"
+            placeholder="your@email.com"
+          />
+        </div>
+
+        <div>
+          <label for="phone" class="block text-sm font-bold text-stone-700 mb-1.5">電話番号（任意）</label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            class="w-full px-4 py-3 rounded-xl border-2 border-beige-300 bg-white text-stone-800 placeholder-stone-400 focus:outline-none focus:border-teal text-base"
+            placeholder="090-1234-5678"
+          />
+        </div>
+
+        <div>
+          <label for="industry" class="block text-sm font-bold text-stone-700 mb-1.5">業種</label>
+          <select
+            id="industry"
+            name="industry"
+            class="w-full px-4 py-3 rounded-xl border-2 border-beige-300 bg-white text-stone-800 focus:outline-none focus:border-teal text-base"
+          >
+            <option value="水産・食品">水産・食品</option>
+            <option value="EC・通販">EC・通販</option>
+            <option value="飲食・店舗">飲食・店舗</option>
+            <option value="その他">その他</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="plan" class="block text-sm font-bold text-stone-700 mb-1.5">希望プラン</label>
+          <select
+            id="plan"
+            name="plan"
+            class="w-full px-4 py-3 rounded-xl border-2 border-beige-300 bg-white text-stone-800 focus:outline-none focus:border-teal text-base"
+          >
+            <option value="diagnosis">無料AI集客診断（30分）</option>
+            <option value="setup">AI集客 自動化導入パック</option>
+            <option value="program">AI集客 3カ月伴走プログラム</option>
+            <option value="advisor">AI顧問（相談し放題）</option>
+            <option value="undecided">未定・相談したい</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="message" class="block text-sm font-bold text-stone-700 mb-1.5">現在の集客の悩み</label>
+          <textarea
+            id="message"
+            name="message"
+            rows="5"
+            class="w-full px-4 py-3 rounded-xl border-2 border-beige-300 bg-white text-stone-800 placeholder-stone-400 focus:outline-none focus:border-teal text-base resize-y"
+            placeholder="例）SNS投稿が続かない、問い合わせ対応に時間がかかっている、など"
+          ></textarea>
+        </div>
+
+        <input type="hidden" id="src" name="src" value="" />
+
+        <button
+          type="submit"
+          class="bg-orange hover:bg-orange-dark text-white font-bold px-6 py-3.5 rounded-xl transition-colors text-base"
+        >
+          送信する →
+        </button>
+
+        <p class="text-xs text-stone-400 leading-relaxed">
+          送信いただいた内容は、お問い合わせへの対応以外の目的には使用しません。詳しくは
+          <a href="/privacy" class="text-teal hover:underline">プライバシーポリシー</a>
+          をご確認ください。
+        </p>
+      </form>
+    ) : (
+      <div class="bg-white rounded-2xl border border-beige-300 p-6 sm:p-8 text-center">
+        <p class="text-4xl mb-4" aria-hidden="true">🛠️</p>
+        <p class="text-stone-700 font-bold mb-2">フォーム準備中です</p>
+        <p class="text-stone-500 text-sm leading-relaxed mb-6">
+          現在お問い合わせフォームを準備しております。恐れ入りますが、しばらくお待ちください。
+        </p>
+        {contactEmail && (
+          <a
+            href={`mailto:${contactEmail}`}
+            class="inline-block bg-orange hover:bg-orange-dark text-white font-bold px-6 py-3 rounded-full transition-colors text-sm"
+          >
+            メールでお問い合わせ →
+          </a>
+        )}
+        <p class="text-xs text-stone-400 leading-relaxed mt-6">
+          詳しくは<a href="/privacy" class="text-teal hover:underline">プライバシーポリシー</a>をご確認ください。
+        </p>
+      </div>
+    )}
+  </section>
+
+  {formReady && (
+    <script>
+      // URLクエリの plan / src をフォームに反映
+      const params = new URLSearchParams(window.location.search);
+      const plan = params.get('plan');
+      const src = params.get('src');
+
+      const planSelect = document.getElementById('plan');
+      if (plan && planSelect instanceof HTMLSelectElement) {
+        const hasOption = Array.from(planSelect.options).some((opt) => opt.value === plan);
+        if (hasOption) planSelect.value = plan;
+      }
+
+      const srcInput = document.getElementById('src');
+      if (src && srcInput instanceof HTMLInputElement) {
+        srcInput.value = src;
+      }
+    </script>
+  )}
+</Layout>

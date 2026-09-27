@@ -1,6 +1,7 @@
 ---
 import Layout from './Layout.astro';
 import NewsletterForm from '../components/NewsletterForm.astro';
+import ServiceCTA from '../components/ServiceCTA.astro';
 
 export interface Props {
   title:       string;
@@ -70,6 +71,9 @@ function fmt(d: Date) {
       prose-blockquote:border-teal prose-blockquote:bg-teal/5 prose-blockquote:rounded-r-xl">
       <slot />
     </div>
+
+    {/* 導入支援CTA */}
+    <ServiceCTA source={Astro.url.pathname} />
 
     {/* メルマガCTA（インライン版） */}
     <NewsletterForm variant="inline" />
